@@ -11,6 +11,7 @@ const onSubmit = handleSubmit((data)  => {
   console.log(data)
 })
 
+
   return (
  <form onSubmit={onSubmit}>
   {/* nombre */}
@@ -18,30 +19,37 @@ const onSubmit = handleSubmit((data)  => {
   <input 
   type="text" 
   {...register("nombre", {
-    required: true,
-    minLength: 5,
-    maxLength:30
-  })} 
+    required:{
+    value: true,
+    message: "Nombre es requerido"
+  },
+    minLength:{
+      value:3,
+    message: "Nombre debe de tener almenos 2 caracteristicas"
+    },
+    maxLength: {
+      value: 20,
+      message: "Nombre debe de tener maximo 30 caracteres"
+    }
+  })}
   />
   {
-    errors.nombre?.type == "required" && 
-    <span>Nombre es requerido</span>
+    errors.nombre && <span> {errors.nombre.message} </span>
   }
 
-{
-    errors.nombre?.type == "required" && <span>
-      Nombre debe de tener almenos 2 caracteres </span>
-  }
 
    {/* correo */}
    <label htmlFor="correo">Correo</label>
     <input type="email" 
     {...register("correo", {
-      required: true,
+      required: {
+        value: /^[a-z0-9.%+-]+@[a-z0-9.-]+\.[a-z]+$/,
+        message: "correo no balido"
+      }
     })}
      />
      {
-    errors.correo && <span>correo es requerido</span>
+    errors.correo && <span>{errors.correo.message}</span>
   }
 
     {/* password */}
@@ -66,10 +74,25 @@ const onSubmit = handleSubmit((data)  => {
   }
 
     {/* Fecha de nacimiento */}
-   <label
-   htmlFor="fechaNacimiento ">Fecha de nacimiento</label>
-    <input type="date" 
-    {...register("fechaNacimiento")} />
+    <label htmlFor="fechaNacimiento">Fecha de Nacimiento</label>
+<input type="date" 
+    {...register("fechaNacimiento", {
+        required: {
+            value: true,
+            message: "Fecha de nacimiento es requerida"
+        },
+        validate: (value) => {
+            const fechaNacimiento = new Date(value);
+            const fechaActual = new Date();
+            const edad = fechaActual.getFullYear() - fechaNacimiento.getFullYear();
+            
+              return edad >= 18 || "Debes ser mayor de edad";
+            
+        }
+    })}
+/>
+{errors.fechaNacimiento && <span>{errors.fechaNacimiento.message}</span>}
+
 
     {/* pais */}
    <label
